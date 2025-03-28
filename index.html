@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3Dプリンターで挑戦した「ジッパー」プロジェクト - 創造と失敗の記録</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #222222;
+            --secondary-text: #555555;
+            --primary-color: #2563eb;
+            --code-bg: #f3f4f6;
+            --border-color: #e5e7eb;
+            --card-bg: #ffffff;
+        }
+        
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --secondary-text: #aaaaaa;
+            --primary-color: #3b82f6;
+            --code-bg: #2d2d2d;
+            --border-color: #444444;
+            --card-bg: #222222;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: background-color 0.3s, color 0.3s;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+        
+        .blog-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .blog-title a {
+            text-decoration: none;
+            color: var(--text-color);
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .article-header {
+            margin-bottom: 40px;
+        }
+        
+        .article-title {
+            font-size: 2.2rem;
+            line-height: 1.3;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .article-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+        
+        .article-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .toc {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .toc-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .toc-list {
+            list-style: none;
+        }
+        
+        .toc-list li {
+            margin-bottom: 10px;
+        }
+        
+        .toc-list a {
+            text-decoration: none;
+            color: var(--text-color);
+            transition: color 0.3s;
+        }
+        
+        .toc-list a:hover {
+            color: var(--primary-color);
+        }
+        
+        .article-content {
+            font-size: 1.05rem;
+            margin-bottom: 60px;
+        }
+        
+        .article-content p {
+            margin-bottom: 1.8em;
+        }
+        
+        .article-content h2 {
+            font-size: 1.6rem;
+            margin: 2.5em 0 1.2em;
+            font-weight: 600;
+            color: var(--text-color);
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .article-content h3 {
+            font-size: 1.3rem;
+            margin: 2em 0 1em;
+            font-weight: 600;
+        }
+        
+        .article-content img {
+            max-width: 100%;
+            height: auto;
+            margin: 2.5em 0;
+            border-radius: 8px;
+        }
+        
+        .article-content blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            margin: 2.5em 0;
+            background-color: var(--card-bg);
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+        
+        .article-content pre {
+            background-color: var(--code-bg);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 2.5em 0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .process-diagram {
+            width: 100%;
+            max-width: 600px;
+            margin: 2em auto;
+            display: block;
+        }
+        
+        .image-caption {
+            text-align: center;
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+            margin-top: -1.5em;
+            margin-bottom: 2em;
+        }
+        
+        .article-tags {
+            display: flex;
+            gap: 10px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background-color: var(--card-bg);
+            color: var(--primary-color);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+        
+        .tag:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 0;
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .article-title {
+                font-size: 1.8rem;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="blog-title"><a href="/">創造と失敗の記録</a></h1>
+            <button class="theme-toggle" id="themeToggle">
+                <span id="themeIcon">🌙</span>
+                <span id="themeText">ダークモード</span>
+            </button>
+        </header>
+        
+        <main>
+            <article>
+                <div class="article-header">
+                    <h1 class="article-title">3Dプリンターで挑戦した「ジッパー」プロジェクト</h1>
+                    <div class="article-meta">
+                        <span>公開日: 2023年12月10日</span>
+                        <span>更新日: 2023年12月15日</span>
+                        <span>カテゴリー: 3Dプリント</span>
+                    </div>
+                    <img src="https://source.unsplash.com/random/800x400/?3dprinter,zipper" alt="3Dプリントされたジッパーのプロトタイプ" class="article-image">
+                </div>
+                
+                <div class="toc">
+                    <h3 class="toc-title">目次</h3>
+                    <ul class="toc-list">
+                        <li><a href="#overview">プロジェクトの概要</a></li>
+                        <li><a href="#define">ジッパーの定義</a></li>
+                        <li><a href="#design">3Dデザインと試行錯誤</a></li>
+                        <li><a href="#test">テストとフィードバック</a></li>
+                        <li><a href="#improve">改善と次の挑戦</a></li>
+                        <li><a href="#conclusion">まとめ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="article-content">
+                    <h2 id="overview">プロジェクトの概要</h2>
+                    <p>このプロジェクトは、First-Year Seminarと呼ばれる１年生必修の単位で、４０以上ある授業の中からそれぞれ興味のある授業を選びます。興味関心を広げることが目的のため、自分の専攻に関係なく自由な選択ができることが特徴です。</p>
+                    
+                    <p>私が履修した「Creativity and Making Failure」では、創造性豊な工作やアクティビティに取り組んで、失敗を見つけ、どのように改善していくかを考えるスキルを養うことが目標です。</p>
+                    
+                    <p>今回は、最終課題として取り組んだ3Dプリンターを用いたプロジェクト、「ジッパー」として機能するデザインとその過程について紹介します。</p>
+                    
+                    <h2 id="define">ジッパーの定義</h2>
+                    <p>私たちの授業で、工作に関わらずどんなプロジェクトでも下の図のようなプロセスによって進められると教わります。</p>
+                    
+                    <img src="https://source.unsplash.com/random/600x400/?diagram,process" alt="プロジェクト進行プロセスの図" class="process-diagram">
+                    <p class="image-caption">図: プロジェクト進行プロセス (Define → Ideate → Prototype → Test → Improve)</p>
+                    
+                    <p>この図は「Define（定義）」か「Ideate（発想）」のステップから始まり、方向性を決め、試作を完成させ、エラーが見つかる。そのエラーを克服するために初めのステップに戻るというサイクルです。</p>
+                    
+                    <h3>「定義」ステップ</h3>
+                    <p>ジッパーとは何か？それを考えたとき、私にとってのジッパーは「開閉可能な留め具」であり、「スライダーを通すことで、互いに噛み合う仕組みを持つもの」でした。この基本的な構造を再現するため、以下の要素を設計しました。</p>
+                    
+                    <ul>
+                        <li><strong>歯の構造</strong>: 一つの歯は片側が凸、反対側が凹になっており、スライダーを通すことで互いにロックされる。</li>
+                        <li><strong>スライダーの調整</strong>: スムーズに歯がかみ合うよう、適切な形状と角度を設計。</li>
+                    </ul>
+                    
+                    <h2 id="design">3Dデザインと試行錯誤</h2>
+                    <p>デザインが決まったら、次は3Dプリンターでの出力です。プリント時の密度や方向を調整しながら、</p>
+                    
+                    <ul>
+                        <li>歯は柔軟性を持たせる</li>
+                        <li>スライダーは十分な剛性を持たせる</li>
+                    </ul>
+                    
+                    <p>というバランスを模索しました。しかし、初期のモデルでは思うようにスライドしなかったり、歯が壊れやすかったりと、多くの課題が発生しました。そこで、</p>
+                    
+                    <ul>
+                        <li>デザイン・寸法の微調整</li>
+                        <li>プリント時の密度、向きの調整</li>
+                        <li>材料の選定</li>
+                    </ul>
+                    
+                    <p>といった工程を繰り返し、何度も試作と修正を重ねました。</p>
+                    
+                    <img src="https://source.unsplash.com/random/800x400/?3dprinting,prototype" alt="3Dプリントの試作過程" class="article-image">
+                    <p class="image-caption">試作を重ねる過程で生まれた様々なバージョンのジッパー</p>
+                    
+                    <h2 id="test">テストとフィードバック</h2>
+                    <p>最終発表では、外部の人々を招いて、ウォークイン形式でジッパーを試してもらいました。その際のフィードバックは、</p>
+                    
+                    <ul>
+                        <li>「ジッパーとして機能するが、実用的ではない」</li>
+                        <li>「見た目が少しダサい？」</li>
+                        <li>「スライド時がスムーズではない」</li>
+                    </ul>
+                    
+                    <p>といったものでした。</p>
+                    
+                    <blockquote>
+                        「最初のプロトタイプが完璧である必要はありません。重要なのは、フィードバックを得て、それを次の改善に活かすことです」 - 教授のアドバイス
+                    </blockquote>
+                    
+                    <h2 id="improve">改善と次の挑戦</h2>
+                    <p>フィードバックを受けて、シンポジウムに向けて新しいバージョンに挑戦します。</p>
+                    
+                    <p>ジッパーのデザインとスムーズさを改良しました。新しいバージョンはより滑らかで、見た目も洗練されたものになりました。しかし、これはまだプロトタイプです。</p>
+                    
+                    <p>次の挑戦として、</p>
+                    
+                    <ul>
+                        <li>異なる素材の使用</li>
+                        <li>実際の使用例見据えた強度や実用性の改良</li>
+                    </ul>
+                    
+                    <p>に取り組みたいと考えています。</p>
+                    
+                    <img src="https://source.unsplash.com/random/800x400/?improvement,design" alt="改良後のジッパーデザイン" class="article-image">
+                    <p class="image-caption">改良を重ねた最新バージョンのジッパー</p>
+                    
+                    <h2 id="conclusion">まとめ</h2>
+                    <p>エラーは失敗ではなく、プロセスの一部です。試行錯誤を繰り返しながら、より良いものを生み出していく。その過程こそが、このプロジェクトの核心でした。私は、この挑戦を続けることにワクワクしています。</p>
+                </div>
+                
+                <div class="article-tags">
+                    <a href="/tag/3dprinting" class="tag">3Dプリント</a>
+                    <a href="/tag/design" class="tag">デザイン</a>
+                    <a href="/tag/prototyping" class="tag">プロトタイピング</a>
+                    <a href="/tag/engineering" class="tag">エンジニアリング</a>
+                </div>
+            </article>
+        </main>
+        
+        <footer>
+            <p>© 2023 創造と失敗の記録. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        
+        // ローカルストレージからテーマ設定を読み込む
+        const currentTheme = localStorage.getItem('theme');
+        
+        // システム設定をチェック
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        // テーマを適用
+        if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
+            document.body.classList.add('dark-mode');
+            themeIcon.textContent = '☀️';
+            themeText.textContent = 'ライトモード';
+        }
+        
+        // テーマ切り替え
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'ライトモード';
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'ダークモード';
+            }
+        });
+    </script>
+</body>
+</html>
